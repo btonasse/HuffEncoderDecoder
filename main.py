@@ -1,6 +1,4 @@
 import string as st
-import os
-import sys
 
 from kivy.config import Config
 from kivy.app import App
@@ -20,8 +18,6 @@ request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
                      Permission.READ_EXTERNAL_STORAGE])
 
 Config.set('kivy','window_icon','EncDec.ico')
-
-CWDPATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 allASCII = st.printable
 
