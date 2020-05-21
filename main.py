@@ -135,7 +135,7 @@ class EncDecApp(App):
         self.popup2 = Popup(title = 'Enter new key (only ASCII printable characters allowed)', content = poproot, title_align='center', auto_dismiss=True)
         self.popup2.open()
 
-        popOK.bind(on_press = lambda x: self.init_program(popText.ids.ti.text))
+        popOK.bind(on_press = lambda x: self.init_program(popText.ids.ti.text.strip()))
         popCancel.bind(on_press = self.popup2.dismiss)
         
 
