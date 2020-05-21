@@ -15,6 +15,10 @@ from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.properties import ObjectProperty
 
+from android.permissions import request_permissions, Permission
+request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
+                     Permission.READ_EXTERNAL_STORAGE])
+
 Config.set('kivy','window_icon','EncDec.ico')
 
 CWDPATH = os.path.abspath(os.path.dirname(sys.argv[0]))
