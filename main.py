@@ -311,7 +311,7 @@ class EncDecApp(App):
     def get_defaultKeyFile(self):
         defaultKeyFile = open('currentKey.txt', 'r')
         newKey = defaultKeyFile.read()
-        if any(char not in allASCII for char in newKey):
+        if not newKey or any(char not in allASCII for char in newKey):
             defaultKeyFile.close()
             raise ValueError('Only printable ASCII chars allowed.')
         defaultKeyFile.close()
@@ -321,14 +321,15 @@ class EncDecApp(App):
         global theKey, theCode
         
         if reinitKey:
-            try:
+            if any(char not in allASCII for char in reinitKey):
+                self.generic_Exception('',texttoshow='Only printable ASCII characters are accepted.',titletoshow='Error')
+                return
+            else:
                 self.set_defaultKeyFile(reinitKey)
                 theKey = self.get_defaultKeyFile()
                 theCode = self.map_Code(theKey)
                 self.popup2.dismiss()
-            except:
-                self.generic_Exception('',texttoshow='Only printable ASCII characters are accepted.',titletoshow='Error')
-                return
+
         else:
             try:
                 theKey = self.get_defaultKeyFile()
