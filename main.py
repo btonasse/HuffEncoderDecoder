@@ -15,11 +15,9 @@ from kivy.properties import StringProperty
 from kivy.properties import ObjectProperty
 from kivy.factory import Factory
 
-from android.permissions import request_permissions, Permission, check_permission
-i = 0
-while not check_permission([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE]) and i < 3:
-    request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
-    i += 1
+from android.permissions import request_permissions, Permission
+request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
+                     Permission.READ_EXTERNAL_STORAGE])
 
 
 Config.set('kivy','window_icon','EncDec.ico')
