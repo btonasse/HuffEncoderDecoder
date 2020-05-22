@@ -9,9 +9,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.properties import ObjectProperty
-from kivy.factory import Factory
 
 from android.permissions import request_permissions, Permission
 request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
@@ -34,20 +34,134 @@ Alienum persecuti id eum, et eum enim autem molestie. Vulputate theophrastus del
 
 theCode = {}
 
-class CustPopup(Popup):
-    lbl_text = StringProperty('')
+Builder.load_string('''
+<ScrollableText>:
+    id: scrl
+    scroll_type: ['bars', 'content']
+    bar_width: 4
+    bar_color: [.2, .2, .2, .9]
+    bar_inactive_color: [.7, .7, .7, .9]
+    
+    TextInput:
+        id: ti
+        size_hint_y: None
+        height: max(self.minimum_height, scrl.height)
 
-class RootBox(BoxLayout):
+<ScrollableLabel>:
+    id: sc
+    
+    Label:
+        id: lb
+        text: sc.text
+        font_size: 12
+        text_size: self.width, None
+        size_hint_y: None
+        height: self.texture_size[1]
+
+''')
+
+class ScrollableText(ScrollView):
+    pass
+class ScrollableLabel(ScrollView):
+    text = StringProperty('')
+
+class EncDecApp(App):
+    popup1 = ObjectProperty(None)
+    popup2 = ObjectProperty(None)
+    def build(self):
+        self.title = 'Huffman encryptor/decryptor - by Bernardo Tonasse - v1.0'
+        self.root = BoxLayout(orientation='vertical')
+        
+        self.topLayout = BoxLayout(size_hint_y=10)
+        self.inputScroll = ScrollableText()
+        self.outputScroll = ScrollableText()
+        
+
+        self.midLayout = BoxLayout()
+        self.encBtn = Button(text='ENCODE--->')
+        self.decBtn = Button(text='<---DECODE')
+
+        self.encBtn.bind(on_press = lambda x: self.enc_Button())
+        self.decBtn.bind(on_press = lambda x: self.dec_Button())
+        
+        self.botLayout = BoxLayout()
+        self.keyBtn = Button(text='VIEW/SET KEY')
+        self.keyBtn.bind(on_press = lambda x: self.viewset_Key())
+        
+        self.botLayout.add_widget(self.keyBtn)
+        self.midLayout.add_widget(self.encBtn)
+        self.midLayout.add_widget(self.decBtn)
+        self.topLayout.add_widget(self.inputScroll)
+        self.topLayout.add_widget(self.outputScroll)
+        
+        self.root.add_widget(self.topLayout)
+        self.root.add_widget(self.midLayout)
+        self.root.add_widget(self.botLayout)
+
+        self.init_program()
+
+        return self.root
+
+    def generic_YesNo(self, button, texttoshow='None', titletoshow='Test'):
+        
+        poproot = GridLayout(cols=1, padding=10)
+
+        popLabel = ScrollableLabel(size_hint_y = 10, text = texttoshow)
+        popYes = Button(text = 'Yes')
+        popNo = Button(text = 'No')
+
+        poproot.add_widget(popLabel)
+        poproot.add_widget(popYes)
+        poproot.add_widget(popNo)
+
+        self.popup1 = Popup(title = titletoshow, content = poproot, title_align='center', auto_dismiss=True)
+        self.popup1.open()
+
+        popYes.bind(on_press = self.yes_newKey)
+        popNo.bind(on_press = self.popup1.dismiss)
+
+    def yes_newKey(self, instance):
+        self.popup1.dismiss()
+        poproot = GridLayout(cols=1, padding=10)
+
+        popText = ScrollableText(size_hint_y = 10)
+        popOK = Button(text = 'OK')
+        popCancel = Button(text = 'CANCEL')
+        
+        poproot.add_widget(popText)
+        poproot.add_widget(popOK)
+        poproot.add_widget(popCancel)
+
+        self.popup2 = Popup(title = 'Enter new key (only ASCII printable characters allowed)', content = poproot, title_align='center', auto_dismiss=True)
+        self.popup2.open()
+
+        popOK.bind(on_press = lambda x: self.init_program(popText.ids.ti.text.strip()))
+        popCancel.bind(on_press = self.popup2.dismiss)
+        
+
+    def generic_Exception(self, button, texttoshow='None', titletoshow='Error!'):
+        poproot = GridLayout(cols=1, padding=10)
+
+        popLabel = Label(size_hint_y = 10, text = texttoshow)
+        popOK = Button(text = 'OK')
+        
+        poproot.add_widget(popLabel)
+        poproot.add_widget(popOK)
+        
+        popup = Popup(title = titletoshow, content = poproot, title_align='center')
+        popup.open()
+
+        popOK.bind(on_press = popup.dismiss)
 
     def complete_Key(self, keystring):
         '''
-        Returns a list of chars contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.
+        Returns a list of characters contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.
         If some ascii characters are missing, they are added at the end of the string.
         '''
         origChars = set(keystring)
         
         if any(char not in allASCII for char in origChars):
-          Factory.GenericPop(title='Error',lbl_text='Key contains non ASCII characters. Please enter a valid key.').open()
+          self.generic_Exception('',texttoshow='Key contains non ASCII characters. Please enter a valid key.',titletoshow='Error')
           return
 
         charsToAdd = [char for char in allASCII if char not in origChars]
@@ -162,13 +276,12 @@ class RootBox(BoxLayout):
         '''
         Callback for encode button.
         '''
-        toencode = self.ids.inputBox.text
-
+        toencode = self.inputScroll.ids.ti.text
         try:
             enctext = self.encode_Text(toencode,theCode)
-            self.ids.outputBox.ids.ti.text = enctext
+            self.outputScroll.ids.ti.text = enctext
         except:
-            Factory.GenericPop(title='Error',lbl_text='Only printable ASCII characters are accepted.').open()
+            self.generic_Exception('',texttoshow='Only printable ASCII characters are accepted.',titletoshow='Error')
             return
         return
 
@@ -176,90 +289,55 @@ class RootBox(BoxLayout):
         '''
         Callback for decode button.
         '''
-        todecode = self.ids.outputBox.text
+        todecode = self.outputScroll.ids.ti.text
         
         try:
           dectext = self.decode_Text(todecode,theCode)
-          self.ids.inputBox.ids.ti.text = dectext
+          self.inputScroll.ids.ti.text = dectext
         except:
-          Factory.GenericPop(title='Error',lbl_text='Only 0s and 1s are accepted.').open()
+          self.generic_Exception('',texttoshow='Only 0s and 1s are accepted.',titletoshow='Error')
           return
         return
 
-    def set_currentKeyFile(self, keystring):
-        '''
-        Write the new key to the currentKey.txt file, so the program remembers it next time.
-        '''        
-        currentKeyFile = open('currentKey.txt', 'w')
-        currentKeyFile.write(keystring)
-        currentKeyFile.close()
+    def viewset_Key(self):
+      global theKey, theCode
+      self.generic_YesNo('', texttoshow=theKey, titletoshow='This is the current encryption key. Do you want to change it?')
     
-    def get_currentKeyFile(self):
-        '''
-        Helps rebuilding currentKey.txt. Kinda redundant, since if it fails the program will fallback to the theKey global variable to do the same.
-        '''        
-        currentKeyFile = open('currentKey.txt', 'r')
-        newKey = currentKeyFile.read()
-        if not newKey or any(char not in allASCII for char in newKey):
-            currentKeyFile.close()
-            raise ValueError('Only printable ASCII chars allowed.')
-        currentKeyFile.close()
-        return newKey
-
+    def set_defaultKeyFile(self, keystring):
+        defaultKeyFile = open('currentKey.txt', 'w')
+        defaultKeyFile.write(keystring)
+        defaultKeyFile.close()
+    
     def get_defaultKeyFile(self):
-        '''
-        Reads defaultKey.txt and returns its contents.
-        '''
-        defaultKeyFile = open('defaultKey.txt', 'r')
+        defaultKeyFile = open('currentKey.txt', 'r')
         newKey = defaultKeyFile.read()
         if not newKey or any(char not in allASCII for char in newKey):
             defaultKeyFile.close()
-            raise ValueError("'defaultKey.txt' contains non printable ASCII chars.")
+            raise ValueError('Only printable ASCII chars allowed.')
         defaultKeyFile.close()
         return newKey
 
     def init_program(self, reinitKey=None):  
-        '''
-        Executed when the program is first runs.
-        Initializes the encryption key and calls all functions necessary to build the code dictionary.
-        Is also run when the encryption key is changed to rebuild the dictionary and txt files.
-        '''        
         global theKey, theCode
         
         if reinitKey:
             if any(char not in allASCII for char in reinitKey):
-                Factory.GenericPop(title='Error',lbl_text='Only printable ASCII characters are accepted.').open()
+                self.generic_Exception('',texttoshow='Only printable ASCII characters are accepted.',titletoshow='Error')
                 return
             else:
-                self.set_currentKeyFile(reinitKey)
-                theKey = self.get_currentKeyFile()
+                self.set_defaultKeyFile(reinitKey)
+                theKey = self.get_defaultKeyFile()
                 theCode = self.map_Code(theKey)
+                self.popup2.dismiss()
 
-        else: #This should only run the first time the program executes
+        else:
             try:
-                theKey = self.get_currentKeyFile()
+                theKey = self.get_defaultKeyFile()
             except:
-                try:
-                    theKey = self.get_defaultKeyFile()
-                    self.set_currentKeyFile(theKey)
-                except:
-                    self.set_currentKeyFile(theKey)
+                self.set_defaultKeyFile(theKey)
+                #self.generic_Exception('',texttoshow="Default key 'currentKey.txt' not found. Initializing placeholder key.",titletoshow='Warning')
             theCode = self.map_Code(theKey) 
 
-
-class ScrollableText(ScrollView):
-    text = StringProperty('')
-class ScrollableLabel(ScrollView):
-    text = StringProperty('')
-
-class EncDecApp(App):
-    rootMain = ObjectProperty(RootBox())
-    def build(self):
-        rootMain = RootBox()
-        rootMain.init_program()
-        return rootMain
-
-    
 if __name__ == "__main__":
     EncDecApp().run()
 
