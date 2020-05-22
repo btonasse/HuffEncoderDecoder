@@ -41,7 +41,7 @@ class RootBox(BoxLayout):
 
     def complete_Key(self, keystring):
         '''
-        Returns a list of characters contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.
+        Returns a list of chars contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.
         If some ascii characters are missing, they are added at the end of the string.
         '''
         origChars = set(keystring)
