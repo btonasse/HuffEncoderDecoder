@@ -36,6 +36,8 @@ Vidit natum delenit mea ad, ex pro maiorum platonem! Dolorem assueverit effician
 Et appetere complectitur quo. Ex magna utroque efficiendi pro. Sed ei partem persequeris, eu amet graecis vivendo ius. Enim suscipit efficiantur pro te, iisque argumentum quo ex! Ut noster impetus pri. Vix an sumo errem atomorum! Id tale error vel.
 Alienum persecuti id eum, et eum enim autem molestie. Vulputate theophrastus delicatissimi ei his, ei pro odio putent pertinacia? Vim eu posse verear. Cu quo enim voluptatum appellantur, eos et volumus eligendi, alia legere menandri his ut! Cu pro etiam mazim petentium, est ex exerci scripserit.'''
 
+defKey = theKey
+
 theCode = {}
 
 class CustPopup(Popup):
@@ -218,6 +220,12 @@ class RootBox(BoxLayout):
         Reads defaultKey.txt and returns its contents.
         '''
         file_path = os.path.join(self.data_dir, 'defaultKey.txt')
+
+        if not os.path.exists(file_path):
+            newdefKeyFile = open(file_path, 'w')
+            newdefKeyFile.write(defKey)
+            newdefKeyFile.close()
+
         defaultKeyFile = open(file_path, 'r')
         newKey = defaultKeyFile.read()
         if not newKey or any(char not in allASCII for char in newKey):
