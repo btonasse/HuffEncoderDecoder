@@ -1,6 +1,7 @@
 import string as st
 import os.path
 from jnius import autoclass
+from time import sleep
 
 from kivy.config import Config
 from kivy.app import App
@@ -270,7 +271,8 @@ class EncDecApp(App):
             if not os.path.exists(self.data_dir):
                 os.mkdir(self.data_dir)
         except:
-            self.data_dir = getattr(self, 'user_data_dir')
+            sleep(5)
+            #self.data_dir = getattr(self, 'user_data_dir')
         rootMain = RootBox()
         rootMain.init_program()
         return rootMain
