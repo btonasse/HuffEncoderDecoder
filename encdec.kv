@@ -1,4 +1,5 @@
 #:import Factory kivy.factory.Factory
+#:import Clipboard kivy.core.clipboard.Clipboard
 
 <ScrlTxtInst@ScrollableText>:
 	scroll_type: ['bars', 'content']
@@ -8,7 +9,8 @@
     text: ti.text
     TextInput:
         id: ti
-	size_hint_y: None
+        use_bubble: True
+        size_hint_y: None
         height: max(self.minimum_height, self.parent.height)
 
 <RootBox>:
@@ -21,16 +23,31 @@
 		ScrlTxtInst:
 			id: outputBox
 
+
+
 	BoxLayout:
 		id: midLayout
+
+		Button:
+			id: past1Btn
+			text: 'PASTE'
+			on_press: root.ids.inputBox.ids.ti.text = Clipboard.paste()
 		Button:
 			id: encBtn
+			size_hint_x: 2
 			text: 'ENCODE--->'
 			on_press: root.enc_Button()
+			on_release: Clipboard.copy(root.ids.outputBox.text)
 		Button:
 			id: decBtn
+			size_hint_x: 2
 			text: '<---DECODE'
 			on_press: root.dec_Button()
+			on_release: Clipboard.copy(root.ids.inputBox.text)
+		Button:
+			id: paste2Btn
+			text: 'PASTE'
+			on_press: root.ids.outputBox.ids.ti.text = Clipboard.paste()
 
 	BoxLayout:
 		id: botLayout
