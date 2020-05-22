@@ -15,6 +15,7 @@
 
 <RootBox>:
 	orientation: 'vertical'
+	data_dir: app.data_dir
 	BoxLayout:
 		id: topLayout
 		size_hint_y: 10
@@ -38,6 +39,7 @@
 			text: 'ENCODE--->'
 			on_press: root.enc_Button()
 			on_release: Clipboard.copy(root.ids.outputBox.text)
+
 		Button:
 			id: decBtn
 			size_hint_x: 2

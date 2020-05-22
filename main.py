@@ -1,4 +1,5 @@
 import string as st
+import os.path
 
 from kivy.config import Config
 from kivy.app import App
@@ -16,6 +17,7 @@ from kivy.factory import Factory
 from android.permissions import request_permissions, Permission
 request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
                      Permission.READ_EXTERNAL_STORAGE])
+
 
 Config.set('kivy','window_icon','EncDec.ico')
 
@@ -38,7 +40,8 @@ class CustPopup(Popup):
     lbl_text = StringProperty('')
 
 class RootBox(BoxLayout):
-
+    data_dir = StringProperty('')
+    
     def complete_Key(self, keystring):
         '''
         Returns a list of characters contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.
@@ -190,7 +193,8 @@ class RootBox(BoxLayout):
         '''
         Write the new key to the currentKey.txt file, so the program remembers it next time.
         '''        
-        currentKeyFile = open('currentKey.txt', 'w')
+        file_path = os.path.join(self.data_dir, 'currentKey.txt')
+        currentKeyFile = open(file_path, 'w')
         currentKeyFile.write(keystring)
         currentKeyFile.close()
     
@@ -198,7 +202,8 @@ class RootBox(BoxLayout):
         '''
         Helps rebuilding currentKey.txt. Kinda redundant, since if it fails the program will fallback to the theKey global variable to do the same.
         '''        
-        currentKeyFile = open('currentKey.txt', 'r')
+        file_path = os.path.join(self.data_dir, 'currentKey.txt')
+        currentKeyFile = open(file_path, 'r')
         newKey = currentKeyFile.read()
         if not newKey or any(char not in allASCII for char in newKey):
             currentKeyFile.close()
@@ -210,7 +215,8 @@ class RootBox(BoxLayout):
         '''
         Reads defaultKey.txt and returns its contents.
         '''
-        defaultKeyFile = open('defaultKey.txt', 'r')
+        file_path = os.path.join(self.data_dir, 'defaultKey.txt')
+        defaultKeyFile = open(file_path, 'r')
         newKey = defaultKeyFile.read()
         if not newKey or any(char not in allASCII for char in newKey):
             defaultKeyFile.close()
@@ -225,7 +231,7 @@ class RootBox(BoxLayout):
         Is also run when the encryption key is changed to rebuild the dictionary and txt files.
         '''        
         global theKey, theCode
-        
+
         if reinitKey:
             if any(char not in allASCII for char in reinitKey):
                 Factory.GenericPop(title='Error',lbl_text='Only printable ASCII characters are accepted.').open()
@@ -254,7 +260,9 @@ class ScrollableLabel(ScrollView):
 
 class EncDecApp(App):
     rootMain = ObjectProperty(RootBox())
+    data_dir = StringProperty()
     def build(self):
+        self.data_dir = getattr(self, 'user_data_dir')
         rootMain = RootBox()
         rootMain.init_program()
         return rootMain
