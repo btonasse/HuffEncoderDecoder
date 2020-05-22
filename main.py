@@ -265,7 +265,8 @@ class EncDecApp(App):
     def build(self):
         try:
             Environment = autoclass('android.os.Environment')
-            self.data_dir = os.path.join(Environment.getExternalStorageDirectory(), 'EncDec')
+            path = Environment.getExternalStorageDirectory().getAbsolutePath()
+            self.data_dir = os.path.join(path, 'EncDec')
             if not os.path.exists(self.data_dir):
                 os.mkdir(self.data_dir)
         except:
