@@ -1,0 +1,104 @@
+#:import Factory kivy.factory.Factory
+
+<ScrlTxtInst@ScrollableText>:
+	scroll_type: ['bars', 'content']
+    bar_width: 4
+    bar_color: [.2, .2, .2, .9]
+    bar_inactive_color: [.7, .7, .7, .9]
+    text: ti.text
+    TextInput:
+        id: ti
+        size_hint_y: None
+        height: max(self.minimum_height, self.parent.height)
+
+<RootBox>:
+	orientation: 'vertical'
+	BoxLayout:
+		id: topLayout
+		size_hint_y: 10
+		ScrlTxtInst:
+			id: inputBox
+		ScrlTxtInst:
+			id: outputBox
+
+	BoxLayout:
+		id: midLayout
+		Button:
+			id: encBtn
+			text: 'ENCODE--->'
+			on_press: root.enc_Button()
+		Button:
+			id: decBtn
+			text: '<---DECODE'
+			on_press: root.dec_Button()
+
+	BoxLayout:
+		id: botLayout
+		Button:
+			id: keyBtn
+			text: 'VIEW/SET KEY'
+			on_press: Factory.ShowSetKeyAsk(lbl_text = app.rootMain.get_currentKeyFile()).open()
+
+<ScrlLblInst@ScrollableLabel>:
+    id: sc
+    size_hint_y: 10
+    Label:
+        id: lb
+        text: sc.text
+        font_size: 12
+        text_size: self.width, None
+        size_hint_y: None
+        height: self.texture_size[1]
+
+<NewKeyPop@CustPopup>:
+	title: 'Enter new key (only ASCII printable characters allowed)'
+	title_align: 'center'
+	GridLayout:
+		cols: 1
+		padding: 10
+		
+		ScrlTxtInst:
+			id: popText
+			size_hint_y: 10
+		Button:
+			id: popOK
+			text: 'OK'
+			on_press: app.rootMain.init_program(reinitKey=root.ids.popText.text.strip())
+			on_press: root.dismiss()
+		Button:
+			id: popCancel
+			text: 'CANCEL'
+			on_press: root.dismiss()
+
+<ShowSetKeyAsk@CustPopup>:
+	title: 'This is the current encryption key. Do you want to change it?'
+	title_align: 'center'
+	GridLayout:
+		cols: 1
+		padding: 10
+
+		ScrlLblInst:
+			text: root.lbl_text
+		Button:
+			id: popYes
+			text: 'Yes'
+			on_press: Factory.NewKeyPop().open()
+			on_press: root.dismiss()
+		Button:
+			id: popNo
+			text: 'No'		
+			on_press: root.dismiss()
+
+<GenericPop@CustPopup>:
+	title_align: 'center'
+	GridLayout:
+		cols: 1
+		padding: 10
+
+		Label:
+			size_hint_y: 10
+			text: root.lbl_text
+		Button:
+			text: 'OK'		
+			on_press: root.dismiss()
+	
