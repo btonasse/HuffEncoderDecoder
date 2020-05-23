@@ -23,7 +23,8 @@ if not check_permission(Permission.WRITE_EXTERNAL_STORAGE) or not check_permissi
     sleep(5)
 
 
-Config.set('kivy','window_icon','EncDec.ico')
+Config.set('kivy','pause_on_minimize', 1)
+Config.set('kivy', 'exit_on_escape', 0)
 
 allASCII = st.printable
 
