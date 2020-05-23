@@ -254,6 +254,9 @@ class RootBox(BoxLayout):
         else: #This should only run the first time the program executes
             try:
                 theKey = self.get_currentKeyFile()
+            except PermissionError:
+                print('No storage permissions. Exiting app.')
+                self.exit()
             except:
                 try:
                     theKey = self.get_defaultKeyFile()
@@ -281,7 +284,7 @@ class EncDecApp(App):
         except:
             sleep(5)
             self.build()
-            #self.data_dir = getattr(self, 'user_data_dir')
+        
         rootMain = RootBox()
         rootMain.init_program()
         return rootMain
