@@ -47,8 +47,7 @@ class CustPopup(Popup):
     lbl_text = StringProperty('')
 
 class RootBox(BoxLayout):
-    data_dir = StringProperty('')
-    
+        
     def complete_Key(self, keystring):
         '''
         Returns a list of characters contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.
@@ -200,7 +199,7 @@ class RootBox(BoxLayout):
         '''
         Write the new key to the currentKey.txt file, so the program remembers it next time.
         '''        
-        file_path = os.path.join(self.data_dir, 'currentKey.txt')
+        file_path = os.path.join(data_dir, 'currentKey.txt')
         currentKeyFile = open(file_path, 'w')
         currentKeyFile.write(keystring)
         currentKeyFile.close()
@@ -209,7 +208,7 @@ class RootBox(BoxLayout):
         '''
         Helps rebuilding currentKey.txt. Kinda redundant, since if it fails the program will fallback to the theKey global variable to do the same.
         '''        
-        file_path = os.path.join(self.data_dir, 'currentKey.txt')
+        file_path = os.path.join(data_dir, 'currentKey.txt')
         currentKeyFile = open(file_path, 'r')
         newKey = currentKeyFile.read()
         if not newKey or any(char not in allASCII for char in newKey):
@@ -222,7 +221,7 @@ class RootBox(BoxLayout):
         '''
         Reads defaultKey.txt and returns its contents.
         '''
-        file_path = os.path.join(self.data_dir, 'defaultKey.txt')
+        file_path = os.path.join(data_dir, 'defaultKey.txt')
 
         if not os.path.exists(file_path):
             newdefKeyFile = open(file_path, 'w')
@@ -276,17 +275,7 @@ class ScrollableLabel(ScrollView):
 
 class EncDecApp(App):
     rootMain = ObjectProperty(RootBox())
-    data_dir = StringProperty()
     def build(self):
-        try:
-            Environment = autoclass('android.os.Environment')
-            path = Environment.getExternalStorageDirectory().getAbsolutePath()
-            self.data_dir = os.path.join(path, 'EncDec')
-            if not os.path.exists(self.data_dir):
-                os.mkdir(self.data_dir)
-        except PermissionError:
-            print('Failed to create EncDec folder (no permission). Exiting app.')
-            mainapp.exit()
         
         rootMain = RootBox()
         rootMain.init_program()
@@ -294,5 +283,15 @@ class EncDecApp(App):
 
 mainapp = EncDecApp()
 if __name__ == "__main__":
+    try:
+        Environment = autoclass('android.os.Environment')
+        path = Environment.getExternalStorageDirectory().getAbsolutePath()
+        data_dir = os.path.join(path, 'EncDec')
+        if not os.path.exists(data_dir):
+            os.mkdir(data_dir)
+    except PermissionError:
+        print('Failed to create EncDec folder (no permission). Exiting app.')
+        mainapp.exit()    
+    
     mainapp.run()
 
