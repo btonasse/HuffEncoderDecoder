@@ -56,7 +56,7 @@
 		Button:
 			id: keyBtn
 			text: 'VIEW/SET KEY'
-			on_press: Factory.ShowSetKeyAsk(lbl_text = app.rootMain.get_currentKeyFile()).open()
+			on_release: Factory.ShowSetKeyAsk(lbl_text = app.rootMain.get_currentKeyFile()).open()
 
 <ScrlLblInst@ScrollableLabel>:
     id: sc
@@ -82,12 +82,12 @@
 		Button:
 			id: popOK
 			text: 'OK'
-			on_press: app.rootMain.init_program(reinitKey=root.ids.popText.text.strip())
-			on_press: root.dismiss()
+			on_release: app.rootMain.init_program(reinitKey=root.ids.popText.text.strip())
+			on_release: root.dismiss()
 		Button:
 			id: popCancel
 			text: 'CANCEL'
-			on_press: root.dismiss()
+			on_release: root.dismiss()
 
 <ShowSetKeyAsk@CustPopup>:
 	title: 'This is the current encryption key. Do you want to change it?'
@@ -101,12 +101,12 @@
 		Button:
 			id: popYes
 			text: 'Yes'
-			on_press: Factory.NewKeyPop().open()
-			on_press: root.dismiss()
+			on_release: Factory.NewKeyPop().open()
+			on_release: root.dismiss()
 		Button:
 			id: popNo
 			text: 'No'		
-			on_press: root.dismiss()
+			on_release: root.dismiss()
 
 <GenericPop@CustPopup>:
 	title_align: 'center'
