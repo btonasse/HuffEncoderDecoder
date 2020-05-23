@@ -280,12 +280,13 @@ class EncDecApp(App):
                 os.mkdir(self.data_dir)
         except:
             sleep(5)
+            self.build()
             #self.data_dir = getattr(self, 'user_data_dir')
         rootMain = RootBox()
         rootMain.init_program()
         return rootMain
 
-    
+mainapp = EncDecApp()
 if __name__ == "__main__":
-    EncDecApp().run()
+    mainapp.run()
 
