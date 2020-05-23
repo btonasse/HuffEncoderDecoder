@@ -256,7 +256,7 @@ class RootBox(BoxLayout):
                 theKey = self.get_currentKeyFile()
             except PermissionError:
                 print('No storage permissions. Exiting app.')
-                self.exit()
+                mainapp.stop()
             except:
                 try:
                     theKey = self.get_defaultKeyFile()
