@@ -281,9 +281,9 @@ class EncDecApp(App):
             self.data_dir = os.path.join(path, 'EncDec')
             if not os.path.exists(self.data_dir):
                 os.mkdir(self.data_dir)
-        except:
-            sleep(5)
-            self.build()
+        except PermissionError:
+            print('Failed to create EncDec folder (no permission). Exiting app.')
+            mainapp.exit()
         
         rootMain = RootBox()
         rootMain.init_program()
