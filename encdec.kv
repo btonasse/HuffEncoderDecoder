@@ -33,14 +33,14 @@
 			id: encBtn
 			size_hint_x: 2
 			text: 'ENCODE AND COPY--->'
-			on_release: root.enc_Button()
+			on_press: root.enc_Button()
 			on_release: Clipboard.copy(root.ids.outputBox.text)
 
 		Button:
 			id: decBtn
 			size_hint_x: 2
 			text: '<---DECODE AND COPY'
-			on_release: root.dec_Button()
+			on_press: root.dec_Button()
 			on_release: Clipboard.copy(root.ids.inputBox.text)
 
 
