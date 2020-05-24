@@ -28,27 +28,21 @@
 	BoxLayout:
 		id: midLayout
 
-		Button:
-			id: past1Btn
-			text: 'PASTE'
-			on_release: root.ids.inputBox.ids.ti.text = Clipboard.paste()
+
 		Button:
 			id: encBtn
 			size_hint_x: 2
-			text: 'ENCODE--->'
+			text: 'ENCODE AND COPY--->'
 			on_release: root.enc_Button()
 			on_release: Clipboard.copy(root.ids.outputBox.text)
 
 		Button:
 			id: decBtn
 			size_hint_x: 2
-			text: '<---DECODE'
+			text: '<---DECODE AND COPY'
 			on_release: root.dec_Button()
 			on_release: Clipboard.copy(root.ids.inputBox.text)
-		Button:
-			id: paste2Btn
-			text: 'PASTE'
-			on_release: root.ids.outputBox.ids.ti.text = Clipboard.paste()
+
 
 	BoxLayout:
 		id: botLayout
