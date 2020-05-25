@@ -15,6 +15,9 @@ from kivy.uix.popup import Popup
 from kivy.properties import StringProperty
 from kivy.properties import ObjectProperty
 from kivy.factory import Factory
+from kivy.core.window import Window
+
+Window.softinput_mode = 'below_target'
 
 from android.permissions import request_permissions, Permission, check_permission
 if not check_permission(Permission.WRITE_EXTERNAL_STORAGE) or not check_permission(Permission.READ_EXTERNAL_STORAGE):
