@@ -124,17 +124,18 @@
 		cols: 1
 		padding: 10
 
-		ScrlLblInst:
+		Label:
+			size_hint_y: 10
 			text: root.lbl_text
 		Button:
 			id: popYes
 			text: 'Yes'
-			on_release: app.rootMain.yesno_answer = 'yes'
+			on_press: app.rootMain.yesno_answer = 'yes'
 			on_release: root.dismiss()
 		Button:
 			id: popNo
 			text: 'No'		
-			on_release: app.rootMain.yesno_answer = 'no'
+			on_press: app.rootMain.yesno_answer = 'no'
 			on_release: root.dismiss()
 
 <GenericPop@CustPopup>:
