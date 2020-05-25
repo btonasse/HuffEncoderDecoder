@@ -81,6 +81,9 @@ class RootBox(BoxLayout):
         self.saveloadpop = CustPopup(title='Save file...', content=content, auto_dismiss=False)
         self.saveloadpop.open()
     
+    def generic_yesno(self, tit, txt):
+        Factory.GenYesNo(title=tit, lbl_text=txt).open()
+    
     def save(self, path, file):
         if not file:
             return
@@ -92,8 +95,7 @@ class RootBox(BoxLayout):
         filename = os.path.join(path, file)
         
         if os.path.exists(filename):
-            while not self.yesno_answer:
-                Factory.GenYesNo(title='Overwrite existing file?', lbl_text='File already existis. Overwrite it?').open()
+            generic_yesno(tit='Overwrite existing file?', txt='File already existis. Overwrite it?')
             if self.yesno_answer == 'no':
                 return
         if filename[-4:] != '.txt':
