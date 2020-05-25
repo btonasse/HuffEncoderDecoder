@@ -59,6 +59,9 @@ class SaveDiag(BoxLayout):
 class RootBox(BoxLayout):
     newkey_input = StringProperty('')
     yesno_answer = StringProperty('')
+    already_answered = StringProperty('')
+    temppath = StringProperty('')
+    tempfile = StringProperty('')
 
     def show_load(self):
         content = LoadDiag(dism = self.dismiss, load = self.load)
@@ -82,6 +85,7 @@ class RootBox(BoxLayout):
         self.saveloadpop.open()
     
     def generic_yesno(self, tit, txt):
+        self.already_answered = 'yes'
         Factory.GenYesNo(title=tit, lbl_text=txt).open()
     
     def save(self, path, file):
@@ -94,15 +98,18 @@ class RootBox(BoxLayout):
         oldkey_text = self.get_currentKeyFile()
         filename = os.path.join(path, file)
         
-        if os.path.exists(filename):
+        self.temppath = path
+        self.tempfile = file        
+        if os.path.exists(filename) and not self.already_answered:
             self.generic_yesno(tit='Overwrite existing file?', txt='File already existis. Overwrite it?')
             if self.yesno_answer == 'no':
                 return
-        if filename[-4:] != '.txt':
-            filename += '.txt'
-        with open(filename, 'w') as filetosave:
-            filetosave.write(oldkey_text) 
-        self.dismiss()
+        else:
+            if filename[-4:] != '.txt':
+                filename += '.txt'
+            with open(filename, 'w') as filetosave:
+                filetosave.write(oldkey_text) 
+            self.dismiss()
     
     def complete_Key(self, keystring):
         '''
