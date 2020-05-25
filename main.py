@@ -55,9 +55,10 @@ class SaveDiag(BoxLayout):
     dism = ObjectProperty(None)
     save = ObjectProperty(None)
     text_input = ObjectProperty(None)
-
+    
 class RootBox(BoxLayout):
     newkey_input = StringProperty('')
+    yesno_answer = StringProperty('')
 
     def show_load(self):
         content = LoadDiag(dism = self.dismiss, load = self.load)
@@ -78,8 +79,8 @@ class RootBox(BoxLayout):
     def show_save(self):
         content = SaveDiag(dism = self.dismiss, save = self.save)
         self.saveloadpop = CustPopup(title='Save file...', content=content, auto_dismiss=False)
-        self.saveloadpop.open() 
-
+        self.saveloadpop.open()
+    
     def save(self, path, file):
         if not file:
             return
@@ -89,6 +90,16 @@ class RootBox(BoxLayout):
             return
         oldkey_text = self.get_currentKeyFile()
         filename = os.path.join(path, file)
+        
+        if os.exists(filename):
+            Factory.GenYesNo(title='Overwrite existing file?', lbl_text='File already existis. Overwrite it?').open()
+            i = 0
+            while not self.yesno_answer and i < 20:
+                sleep(1)
+                i += 1
+                continue
+            if self.yesno_answer == 'no':
+                return
         if filename[-4:] != '.txt':
             filename += '.txt'
         with open(filename, 'w') as filetosave:
