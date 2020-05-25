@@ -99,7 +99,7 @@ class RootBox(BoxLayout):
         self.temppath = path
         self.tempfile = file        
         if os.path.exists(filename) and not self.yesno_answer:
-            self.generic_yesno(tit='Overwrite existing file?', txt='File already existis. Overwrite it?')
+            self.generic_yesno(tit='Overwrite existing file?', txt='File already exists. Overwrite it?')
         elif self.yesno_answer == 'no':
                 self.yesno_answer = ''
                 return
