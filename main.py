@@ -83,7 +83,7 @@ class RootBox(BoxLayout):
 
     def show_save(self):
         content = SaveDiag(dism = self.dismiss, save = self.save)
-        self.saveloadpop = CustPopup(title='Save file...', content=content, auto_dismiss=False)
+        self.saveloadpop = CustPopup(title='Enter a name for your backup file...', content=content, auto_dismiss=False)
         self.saveloadpop.open()
     
     def generic_yesno(self, tit, txt):
