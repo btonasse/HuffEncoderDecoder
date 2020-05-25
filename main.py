@@ -45,9 +45,55 @@ theCode = {}
 
 class CustPopup(Popup):
     lbl_text = StringProperty('')
+    newkeyinput = StringProperty('')
+
+class LoadDiag(BoxLayout):
+    dism = ObjectProperty(None)
+    load = ObjectProperty(None)
+    
+class SaveDiag(BoxLayout):
+    dism = ObjectProperty(None)
+    save = ObjectProperty(None)
+    text_input = ObjectProperty(None)
 
 class RootBox(BoxLayout):
-        
+    newkey_input = StringProperty('')
+
+    def show_load(self):
+        content = LoadDiag(dism = self.dismiss, load = self.load)
+        self.saveloadpop = Popup(title='Load file...', content=content, auto_dismiss=False)
+        self.saveloadpop.open()
+
+    def dismiss(self):
+        self.saveloadpop.dismiss()
+
+    def load(self, path, file):
+        if not file:
+            return
+        filename = file[0]
+        with open(filename) as filetoopen:
+            self.newkey_input = filetoopen.read()
+        self.dismiss()
+
+    def show_save(self):
+        content = SaveDiag(dism = self.dismiss, save = self.save)
+        self.saveloadpop = CustPopup(title='Save file...', content=content, auto_dismiss=False)
+        self.saveloadpop.open() 
+
+    def save(self, path, file):
+        if not file:
+            return
+        validtext = st.ascii_letters + st.digits + '.-_ '
+        if any(char not in validtext for char in file):
+            Factory.GenericPop(title='Error',lbl_text='No special characters on the filename, please.').open()
+        oldkey_text = self.get_currentKeyFile()
+        filename = os.path.join(path, file)
+        if filename[-4:] != '.txt':
+            filename += '.txt'
+        with open(filename, 'w') as filetosave:
+            filetosave.write(oldkey_text) 
+        self.dismiss()
+    
     def complete_Key(self, keystring):
         '''
         Returns a list of characters contained in the keystring so the program raises exceptions whenever you try to encode a message containing unmapped characters.

@@ -1,5 +1,6 @@
 #:import Factory kivy.factory.Factory
 #:import Clipboard kivy.core.clipboard.Clipboard
+#:import data_dir __main__.data_dir
 
 <ScrlTxtInst@ScrollableText>:
 	scroll_type: ['bars', 'content']
@@ -57,7 +58,7 @@
     Label:
         id: lb
         text: sc.text
-        font_size: 12
+        font_size: 14
         text_size: self.width, None
         size_hint_y: None
         height: self.texture_size[1]
@@ -66,6 +67,9 @@
 	title: 'Enter new key (only ASCII printable characters allowed)'
 	title_align: 'center'
 	auto_dismiss: False
+	newkeyinput: app.rootMain.newkey_input
+	on_newkeyinput: self.ids.popText.ids.ti.text = self.newkeyinput
+
 	GridLayout:
 		cols: 1
 		padding: 10
@@ -78,6 +82,16 @@
 			text: 'OK'
 			on_release: app.rootMain.init_program(reinitKey=root.ids.popText.text.strip())
 			on_release: root.dismiss()
+			
+		BoxLayout:
+			orientation: 'horizontal'
+			Button:
+				text: 'LOAD FROM FILE'
+				on_release: app.rootMain.show_load()
+			Button:
+				text: 'BACKUP'
+				on_release: app.rootMain.show_save()
+
 		Button:
 			id: popCancel
 			text: 'CANCEL'
@@ -117,3 +131,51 @@
 			text: 'OK'		
 			on_release: root.dismiss()
 	
+<LoadDiag>:
+	title_align: 'center'
+	GridLayout:
+		cols: 1
+		padding: 10
+		
+		FileChooserIconView:
+			size_hint_y: 10
+			id: filechooser
+			filters: ['*.txt']
+			filter_dirs: True
+			rootpath: data_dir
+		BoxLayout:
+			Button:
+				text: 'LOAD'
+				on_release: root.load(filechooser.path, filechooser.selection)
+			Button:
+				text: 'CANCEL'
+				on_release: root.dism()
+			
+
+<SaveDiag>:
+	title_align: 'center'
+	text_input: filnam
+	GridLayout:
+		cols: 1
+		padding: 10
+		
+		FileChooserIconView:
+			size_hint_y: 10
+			id: filechooser
+			filters: ['*.txt']
+			filter_dirs: True
+			rootpath: data_dir
+			on_selection: filnam.text = filechooser.selection[0].replace(filechooser.path + '/','')
+			
+		TextInput:
+			id: filnam
+			
+		BoxLayout:
+			Button:
+				size_hint_x: 2
+				text: 'SAVE'
+				on_release: root.save(filechooser.path, root.text_input.text)
+			Button:
+				size_hint_x: 2
+				text: 'CANCEL'
+				on_release: root.dism()
