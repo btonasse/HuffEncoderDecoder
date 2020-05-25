@@ -95,7 +95,7 @@ class RootBox(BoxLayout):
         filename = os.path.join(path, file)
         
         if os.path.exists(filename):
-            generic_yesno(tit='Overwrite existing file?', txt='File already existis. Overwrite it?')
+            self.generic_yesno(tit='Overwrite existing file?', txt='File already existis. Overwrite it?')
             if self.yesno_answer == 'no':
                 return
         if filename[-4:] != '.txt':
