@@ -92,11 +92,8 @@ class RootBox(BoxLayout):
         filename = os.path.join(path, file)
         
         if os.path.exists(filename):
-            i = 0
-            while not self.yesno_answer and i < 20:
+            while not self.yesno_answer:
                 Factory.GenYesNo(title='Overwrite existing file?', lbl_text='File already existis. Overwrite it?').open()
-                i += 1
-                continue
             if self.yesno_answer == 'no':
                 return
         if filename[-4:] != '.txt':
