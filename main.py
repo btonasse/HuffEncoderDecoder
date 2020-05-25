@@ -91,7 +91,7 @@ class RootBox(BoxLayout):
         oldkey_text = self.get_currentKeyFile()
         filename = os.path.join(path, file)
         
-        if os.exists(filename):
+        if os.path.exists(filename):
             Factory.GenYesNo(title='Overwrite existing file?', lbl_text='File already existis. Overwrite it?').open()
             i = 0
             while not self.yesno_answer and i < 20:
