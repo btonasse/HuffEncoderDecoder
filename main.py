@@ -96,6 +96,9 @@ class RootBox(BoxLayout):
         if any(char not in validtext for char in file):
             Factory.GenericPop(title='Error',lbl_text='No special characters on the filename, please.').open()
             return
+        if file in 'currentKey.txt' or file in 'defaultKey.txt':
+            Factory.GenericPop(title='Error',lbl_text='This file cannot be overwritten.').open()
+            return            
         oldkey_text = self.get_currentKeyFile()
         filename = os.path.join(path, file)
         
