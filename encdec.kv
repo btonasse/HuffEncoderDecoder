@@ -120,6 +120,7 @@
 <GenYesNo@CustPopup>:
 	title_align: 'center'
 	auto_dismiss: False
+	on_dismiss: app.rootMain.save(app.rootMain.temppath, app.rootMain.tempfile)
 	GridLayout:
 		cols: 1
 		padding: 10
