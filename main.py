@@ -86,6 +86,7 @@ class RootBox(BoxLayout):
         validtext = st.ascii_letters + st.digits + '.-_ '
         if any(char not in validtext for char in file):
             Factory.GenericPop(title='Error',lbl_text='No special characters on the filename, please.').open()
+            return
         oldkey_text = self.get_currentKeyFile()
         filename = os.path.join(path, file)
         if filename[-4:] != '.txt':
