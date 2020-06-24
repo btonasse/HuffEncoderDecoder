@@ -194,14 +194,40 @@ class RootBox(BoxLayout):
           codeDict[char] = code
         return codeDict
 
+    def zigzag_Split(self, seq):
+        '''
+        Splits a sequence into two, alternating the values. Expects a sorted list or dict as input.
+        '''
+        if type(seq) is dict:
+            seq = list(seq.items())
+            dic1, dic2 = seq[::2], seq[1::2]
+            dic1, dic2 = dict(dic1), dict(dic2)
+            return dic1, dic2
+        else:
+            return seq[::2], seq[1::2]
+
+
     def map_Code(self, keystring):
         '''
         Puts all the above functions into one box. Returns the code map.
+        The frequency dictionary is split into 4 smaller dictionaries. Generates cleaner tree and shorter codes.
         '''
-        a = self.count_Frequency(keystring)
-        b = self.create_Tree(a)
-        c = self.code_Gen(b)
-        return c
+        freqDict = self.count_Frequency(keystring)
+        freq0, freq1 = self.zigzag_Split(freqDict)
+        freq00, freq01 = self.zigzag_Split(freq0)
+        freq10, freq11 = self.zigzag_Split(freq1)
+        tree00, tree01, tree10, tree11 = self.create_Tree(freq00), self.create_Tree(freq01), self.create_Tree(freq10), self.create_Tree(freq11)
+        code00, code01, code10, code11 = self.code_Gen(tree00), self.code_Gen(tree01), self.code_Gen(tree10), self.code_Gen(tree11)
+        for k, v in code00.items():
+            code00[k] = '00'+v
+        for k, v in code01.items():
+            code01[k] = '01'+v
+        for k, v in code10.items():
+            code10[k] = '10'+v
+        for k, v in code11.items():
+            code11[k] = '11'+v
+        mergedCode = {**code00, **code01, **code10, **code11}
+        return mergedCode
 
     def encode_Text(self, text, codedict):
         '''
