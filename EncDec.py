@@ -98,14 +98,40 @@ def create_Tree(dic):
 	treeDict = newNode
 	return treeDict
 
+def zigzag_Split(seq):
+	'''
+	Splits a sequence into two, alternating the values. Expects a sorted list or dict as input.
+	'''
+	if type(seq) is dict:
+		seq = list(seq.items())
+		dic1, dic2 = seq[::2], seq[1::2]
+		dic1, dic2 = dict(dic1), dict(dic2)
+		return dic1, dic2
+	else:
+		return seq[::2], seq[1::2]
+
+
 def map_Code(keystring):
 	'''
 	Puts all the above functions into one box. Returns the code map.
+	The frequency dictionary is split into 4 smaller dictionaries. Generates cleaner tree and shorter codes.
 	'''
-	a = count_Frequency(keystring)
-	b = create_Tree(a)
-	c = code_Gen(b)
-	return c
+	freqDict = count_Frequency(keystring)
+	freq0, freq1 = zigzag_Split(freqDict)
+	freq00, freq01 = zigzag_Split(freq0)
+	freq10, freq11 = zigzag_Split(freq1)
+	tree00, tree01, tree10, tree11 = create_Tree(freq00), create_Tree(freq01), create_Tree(freq10), create_Tree(freq11)
+	code00, code01, code10, code11 = code_Gen(tree00), code_Gen(tree01), code_Gen(tree10), code_Gen(tree11)
+	for k, v in code00.items():
+		code00[k] = '00'+v
+	for k, v in code01.items():
+		code01[k] = '01'+v
+	for k, v in code10.items():
+		code10[k] = '10'+v
+	for k, v in code11.items():
+		code11[k] = '11'+v
+	mergedCode = {**code00, **code01, **code10, **code11}
+	return mergedCode
 
 
 
