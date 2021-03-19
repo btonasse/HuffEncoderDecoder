@@ -3,6 +3,12 @@ import os.path
 from jnius import autoclass
 from time import sleep
 
+from android.permissions import request_permissions, Permission, check_permission
+if not check_permission(Permission.WRITE_EXTERNAL_STORAGE) or not check_permission(Permission.READ_EXTERNAL_STORAGE):
+    request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
+                     Permission.READ_EXTERNAL_STORAGE])
+    sleep(5)
+
 from kivy.config import Config
 from kivy.app import App
 from kivy.uix.button import Button
@@ -18,13 +24,6 @@ from kivy.factory import Factory
 from kivy.core.window import Window
 
 Window.softinput_mode = 'below_target'
-
-from android.permissions import request_permissions, Permission, check_permission
-if not check_permission(Permission.WRITE_EXTERNAL_STORAGE) or not check_permission(Permission.READ_EXTERNAL_STORAGE):
-    request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
-                     Permission.READ_EXTERNAL_STORAGE])
-    sleep(5)
-
 
 Config.set('kivy','pause_on_minimize', 1)
 Config.set('kivy', 'exit_on_escape', 0)
@@ -378,10 +377,13 @@ class EncDecApp(App):
 
 mainapp = EncDecApp()
 if __name__ == "__main__":
+    _activity = autoclass("org.kivy.android.PythonActivity").mActivity
+    _external_storage_path = _activity.getExternalFilesDir(None).getPath()
     try:
-        Environment = autoclass('android.os.Environment')
-        path = Environment.getExternalStorageDirectory().getAbsolutePath()
-        data_dir = os.path.join(path, 'EncDec')
+        #Environment = autoclass('android.os.Environment')
+        #path = Environment.getExternalStorageDirectory().getAbsolutePath()
+        #data_dir = os.path.join(path, 'EncDec')
+        data_dir = _external_storage_path
         if not os.path.exists(data_dir):
             os.mkdir(data_dir)
     except PermissionError:
