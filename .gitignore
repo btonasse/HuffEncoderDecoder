@@ -54,3 +54,5 @@ Pipfile.lock
 
 # Sublime
 *.sublime-workspace
+
+deployment_steps.txt
