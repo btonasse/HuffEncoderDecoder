@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 kivy = "*"
-buildozer = "*"
+buildozer = "==2.3.0"
+cython = "==0.29.33"
 
 [dev-packages]
 

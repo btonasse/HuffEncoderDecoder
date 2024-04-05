@@ -28,7 +28,7 @@ source.include_exts = py,png,jpg,kv,atlas,txt,ico
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 1.82
+version = 1.83
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -36,7 +36,7 @@ version = 1.82
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.0.0
+requirements = python3,kivy==2.3.0
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -88,7 +88,7 @@ fullscreen = 0
 android.permissions = WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
 
 # (int) Target Android API, should be as high as possible.
-android.api = 30
+android.api = 33
 
 # (int) Minimum API your APK will support.
 #android.minapi = 21
@@ -219,7 +219,9 @@ android.logcat_filters = *:S python:D
 #android.copy_libs = 1
 
 # (str) The Android arch to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
-android.arch = armeabi-v7a
+# android.arch = arm64-v8a
+# The above is deprecated apparently?
+android.archs = arm64-v8a
 
 #
 # Python for android (p4a) specific
